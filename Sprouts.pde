@@ -32,3 +32,10 @@ void draw() {
 void mousePressed() {
    pts.add(new Node(mouseX,mouseY));
 }
+
+void drawLine(){
+  ArrayList<Point> intersections = new ArrayList<Point>;
+  //with each new node drawn, check the section of the spline created by that against all other lines in the ArrayList of lines. If nothing in
+  // ArrayList intersections at the end, point is valid, move onto next one, if not, do nothing.
+
+}
