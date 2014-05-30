@@ -10,6 +10,10 @@ class Line{
     points.add(p);
   }
   
+  void removeify(Point p){
+    points.remove(p);
+  }
+  
   void display(){
       for (int i = 1; i < points.size()-2; i++){
         curve(points.get(i-1).x,points.get(i-1).y,
