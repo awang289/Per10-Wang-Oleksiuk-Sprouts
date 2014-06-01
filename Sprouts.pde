@@ -54,7 +54,10 @@ boolean findIntersections(Line a){
 boolean findIntersections2(int x1, int y1, int prevX, int prevY){
    //y is the counter for number of surrounding pixels
   int y = 0;
-  int tempX = 0,tempY = 0;
+  int nextX = 0;
+  int nextY = 0;
+  int tempX = 0;
+  int tempY = 0;
   //tempX and tempY are the coordinates for the next point examined/moved to
   for (int i = 0 ;i < 8 ;i++ ){
     if (i == 0){tempX = x1+1; tempY = y1+1;}
@@ -68,6 +71,8 @@ boolean findIntersections2(int x1, int y1, int prevX, int prevY){
     //checks each pixel around the starting point
     if (get(tempX,tempY) == 0 && !(tempX == prevX && tempY == prevY)){
       y++;
+      nextX = tempX;
+      nextY = tempY;
       //if the checked pixel is black and not the previous point, add to y
     }
   } 
