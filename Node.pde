@@ -1,10 +1,10 @@
 class Node {
-  float x, y;
+  int x, y;
   Node() {
-    float x = 0;
-    float y = 0;
+    int x = 0;
+    int y = 0;
   }
-  Node(float x, float y) {
+  Node(int x, int y) {
     this();
     this.x = x;
     this.y = y;
