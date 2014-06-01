@@ -32,7 +32,27 @@ void draw() {
 }
 
 void mousePressed() {
-   pts.add(new Node(mouseX,mouseY));
+  color c = get(mouseX,mouseY);
+  //add check to determine turns && intersections
+  if (isDrawing == false){
+  isDrawing = true;
+  Line l = new Line(new Point(mouseX,mouseY));
+  lines.add(l);
+  }
+  if (isDrawing == true){
+    lines.get(lines.size()-1).addify(new Point(mouseX,mouseY));
+    if (c==#000000){
+    //right now this turns off line drawing if the color of the pixel you've clicked is black, but
+    //later on we should make this green, I.E. the color of all valid nodes
+      isDrawing = false;
+      int x1 = lines.get(lines.size()-1).points.get(0).x;
+      int y1 = lines.get(lines.size()-1).points.get(0).y;
+      int x2 = lines.get(lines.size()-1).points.get(lines.get(lines.size()-1).points.size()-1).x;
+      int y2 = lines.get(lines.size()-1).points.get(lines.get(lines.size()-1).points.size()-1).y;
+      pts.add(new Node(x1,y1));
+      pts.add(new Node(x2,y2));
+    }
+  }
 }
 
 void drawLine(){
