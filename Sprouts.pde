@@ -89,7 +89,8 @@ boolean findIntersections2(int x1, int y1, int prevX, int prevY){
     else if (i == 6){tempX = x1-1; tempY = y1-1;}
     else {tempX = x1-1; tempY = y1+1;}
     //checks each pixel around the starting point
-    if (get(tempX,tempY) == 0 && !(tempX == prevX && tempY == prevY)){
+    color c = get(tempX,tempY);
+    if (c == #000000 && !(tempX == prevX && tempY == prevY)){
       y++;
       nextX = tempX;
       nextY = tempY;
