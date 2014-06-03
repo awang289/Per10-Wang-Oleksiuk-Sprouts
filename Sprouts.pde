@@ -1,7 +1,7 @@
 ArrayList<Node> pts = new ArrayList<Node>();
-ArrayList<Lim> cons = new ArrayList<Lim>();
 ArrayList<Line> lines = new ArrayList<Line>();
 Line current = null;
+boolean needsNew = false;
 int turn = 0;
 /*void start() {
  new NewGameFrame();
@@ -22,68 +22,63 @@ void draw() {
     h.display();
   }
   for (Line l : lines) {
-    println(h.cons);
-    stroke(0);
-    if (h.cons >= 3 ) {
-      fill(#000000);
-    } else {
-      fill(#83F52C);
-    }
-    ellipse(h.x, h.y, 10, 10);
-    stroke(#83F52C);
-    point(h.x, h.y);
-  }
-  for (Line l : lines) {
     l.display();
+
+  }
+  if (current != null) {
+      current.display( color(0,0,255));
+  }
+  else if (needsNew) {
+    lines.get(lines.size() - 1).display( color (255,0,255));
   }
   //if universal boolean val is true, generate a single curve from the working spline to the point the mouse is at, regenerated each frame
 }
 
-int whichNode() {
-  for (int i = 0; i < pts.size (); i++) {
-    float disX = pts.get(i).x - mouseX;
-    float disY = pts.get(i).y - mouseY;
-    if (sqrt(sq(disX) + sq(disY)) < 5 ) {
-      return i;
+
+
+void mousePressed() {
+  if (needsNew) {
+    // breadth first search 10 pixel radius
+    // if pixel found, put node at closest purple pixel
+    //needsNew = false;
+  }
+  else if (current == null) {
+    turn++;
+    startLine(mouseX, mouseY);
+  } else {
+    contLine(mouseX, mouseY);
+  }
+}
+void startLine(int x, int y) {
+  for (Node p : pts) {
+    if (dist(x, y, p.x, p.y) <= 10 && p.cons < 4) {
+      p.cons ++;
+      
+      Line g = new Line(p);
+      lines.add(g);
+      current = g;
     }
   }
-  return -1;
 }
-
-
-/*void mousePressed() {
- if (current == null) {
- turn++;
- startLine(mouseX, mouseY);
- }
- else {
- contLine(mouseX, mouseY);
- }
- }
- void startLine(int x, int y) {
- for (Node p : pts) {
- if (dist(x, y, p.x, p.y) <= 3) {
- Line g = new Line(p);
- lines.add(g);
- current = g;
- }
- }
- }
- void contLine(int x, int y) {
- boolean h = false;
- for (Node p : pts) {
- if (dist(x, y, p.x, p.y) <= 3) {
- current.points.add(p);
- h = true;
- current = null;
- }
- }
- if (!h) {
- current.points.add(new Point(x,y));
- }
- //The check for intersections would go here
- }
- void endLine(int x, int y) {} // This is eventually supposed to make the new Node but I can't figure that out at the moment */
+void contLine(int x, int y) {
+  boolean h = false;
+  for (Node p : pts) {
+    if (dist(x, y, p.x, p.y) <= 10 && p.cons < 4) {
+      p.cons++;
+      current.points.add(p);
+      h = true;
+      current = null;
+      needsNew = true;
+    }
+  }
+  if (!h) {
+    current.points.add(new Point(x, y));
+  }
+  //The check for intersections would go here
+}
+void endLine(int x, int y) {
+} // This is eventually supposed to make the new Node but I can't figure that out at the moment 
+/*
 void mousePressed() {
   color c = get(mouseX, mouseY);
   //add check to determine turns && intersections
@@ -106,7 +101,7 @@ void mousePressed() {
     }
   }
 }
-
+*/
 boolean findIntersections(Line a) {
 
   int x1 = a.points.get(0).x;
@@ -171,5 +166,3 @@ boolean findIntersections2(int x1, int y1, int prevX, int prevY) {
     return findIntersections2(tempX, tempY, x1, y1);
   }
 }
-
-
