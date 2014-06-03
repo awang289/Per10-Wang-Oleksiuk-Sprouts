@@ -10,8 +10,10 @@ int turn = 0;
 void setup() {
   size(400, 400);
   background(255);
-  pts.add(new Node(100,100));
+  pts.add(new Node(100, 100));
   pts.add(new Node(200, 100));
+  boolean isDrawing= false;
+  boolean playTurn = false;
 }
 
 void draw() {
@@ -20,44 +22,90 @@ void draw() {
     h.display();
   }
   for (Line l : lines) {
+    println(h.cons);
+    stroke(0);
+    if (h.cons >= 3 ) {
+      fill(#000000);
+    } else {
+      fill(#83F52C);
+    }
+    ellipse(h.x, h.y, 10, 10);
+    stroke(#83F52C);
+    point(h.x, h.y);
+  }
+  for (Line l : lines) {
     l.display();
   }
   //if universal boolean val is true, generate a single curve from the working spline to the point the mouse is at, regenerated each frame
 }
 
+int whichNode() {
+  for (int i = 0; i < pts.size (); i++) {
+    float disX = pts.get(i).x - mouseX;
+    float disY = pts.get(i).y - mouseY;
+    if (sqrt(sq(disX) + sq(disY)) < 5 ) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+
+/*void mousePressed() {
+ if (current == null) {
+ turn++;
+ startLine(mouseX, mouseY);
+ }
+ else {
+ contLine(mouseX, mouseY);
+ }
+ }
+ void startLine(int x, int y) {
+ for (Node p : pts) {
+ if (dist(x, y, p.x, p.y) <= 3) {
+ Line g = new Line(p);
+ lines.add(g);
+ current = g;
+ }
+ }
+ }
+ void contLine(int x, int y) {
+ boolean h = false;
+ for (Node p : pts) {
+ if (dist(x, y, p.x, p.y) <= 3) {
+ current.points.add(p);
+ h = true;
+ current = null;
+ }
+ }
+ if (!h) {
+ current.points.add(new Point(x,y));
+ }
+ //The check for intersections would go here
+ }
+ void endLine(int x, int y) {} // This is eventually supposed to make the new Node but I can't figure that out at the moment */
 void mousePressed() {
-  if (current == null) {
-    turn++;
-    startLine(mouseX, mouseY);
-  }
-  else {
-    contLine(mouseX, mouseY);
-  }
-}
-void startLine(int x, int y) {
-  for (Node p : pts) {
-    if (dist(x, y, p.x, p.y) <= 3) {
-      Line g = new Line(p);
-      lines.add(g);
-      current = g;
+  color c = get(mouseX, mouseY);
+  //add check to determine turns && intersections
+  if (isDrawing == false && c == #83F52C) {
+    isDrawing = true;
+    int u = whichNode();
+    Line l = new Line(new Point(pts.get(u).x, pts.get(u).y));
+    lines.add(l);
+    pts.get(whichNode()).cons++;
+  } else if (isDrawing == true) {
+    if (c == #83F52C) {
+      pts.get(whichNode()).cons++;
+      int o = whichNode();
+      lines.get(lines.size()-1).addify(new Point(pts.get(o).x, pts.get(o).y));
+      //right now this turns off line drawing if the color of the pixel you've clicked is black, but
+      //later on we should make this green, I.E. the color of all valid nodes
+      isDrawing = false;
+    } else {
+      lines.get(lines.size()-1).addify(new Point(mouseX, mouseY));
     }
   }
 }
-void contLine(int x, int y) {
-  boolean h = false;
-  for (Node p : pts) {
-    if (dist(x, y, p.x, p.y) <= 3) {
-      current.points.add(p);
-      h = true;
-      current = null;
-    }
-  }
-  if (!h) {
-    current.points.add(new Point(x,y));
-  }
-  //The check for intersections would go here
-}
-void endLine(int x, int y) {} // This is eventually supposed to make the new Node but I can't figure that out at the moment
 
 boolean findIntersections(Line a) {
 
@@ -67,6 +115,7 @@ boolean findIntersections(Line a) {
   return findIntersections2(x1, y1, x1, y1);
   //just makes a call to the next function with the starting and previous points as the coordinates for the start of the Line
 }
+
 boolean findIntersections2(int x1, int y1, int prevX, int prevY) {
   //y is the counter for number of surrounding pixels
   int y = 0;
@@ -122,8 +171,5 @@ boolean findIntersections2(int x1, int y1, int prevX, int prevY) {
     return findIntersections2(tempX, tempY, x1, y1);
   }
 }
-
-
-
 
 
