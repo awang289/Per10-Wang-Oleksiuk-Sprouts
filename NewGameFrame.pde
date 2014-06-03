@@ -11,11 +11,9 @@ public class NewGameFrame extends JFrame {
      this.setSize(400,400);
      petList.setMaximumSize(new Dimension(200,20));
      JButton exit = new JButton("Start Game");
-     exit.addActionListener(this);
+
      add(exit);
      setVisible(true);
   }
-  void actionPerformed(ActionEvent e) {
-
 }
      
