@@ -1,5 +1,4 @@
 class Node extends Point{
-  int x, y;
   int cons;
   Node() {
     int x = 0;
