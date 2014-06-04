@@ -37,8 +37,13 @@ void draw() {
 
 
 void mousePressed() {
-  if (needsNew) {
+ if (needsNew) {
+    loadPixels();
+    println(red(pixels[(mouseY*width)+mouseX]));
+    println(blue(pixels[(mouseY*width)+mouseX]));
     // breadth first search 10 pixel radius
+    //red and blue values must be under 230, over 150 
+    //take the lowest value and place node at that pixel
     // if pixel found, put node at closest purple pixel
     //needsNew = false;
   }
