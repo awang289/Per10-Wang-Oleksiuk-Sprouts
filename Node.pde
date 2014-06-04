@@ -13,8 +13,13 @@ class Node extends Point{
   }
   void display() {
     stroke(0);
-    fill(255);
-    ellipse(x, y, 6, 6);
+    color c = color(0,255,0);
+    if (cons >= 3){
+      c = color(255,0,0);
+    }
+    fill(c);
+    ellipse(x, y, 10, 10);
+    stroke(c);
     point(x, y);
   }
 }
