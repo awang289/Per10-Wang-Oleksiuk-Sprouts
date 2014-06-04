@@ -51,7 +51,7 @@ void mousePressed() {
 }
 void startLine(int x, int y) {
   for (Node p : pts) {
-    if (dist(x, y, p.x, p.y) <= 10 && p.cons < 4) {
+    if (dist(x, y, p.x, p.y) <= 10 && p.cons < 3) {
       p.cons ++;
       
       Line g = new Line(p);
