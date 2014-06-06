@@ -9,10 +9,10 @@ void start() {
  new NewGameFrame();
 }
 void setup() {
-  size(400, 400);
+  size(800, 600);
   background(255);
   for (int x = 0; x < start; x++) {
-    pts.add(new Node(100* (x / 3) + 100, (x % 3) * 100 + 100));
+    pts.add(new Node(100* (x / 3) + 200, (x % 3) * 100 + 200));
   }
  // pts.add(new Node(100, 100));
   //pts.add(new Node(200, 100));
@@ -43,8 +43,20 @@ void draw() {
 void mousePressed() {
  if (needsNew) {
     loadPixels();
-    println(red(pixels[(mouseY*width)+mouseX]));
-    println(blue(pixels[(mouseY*width)+mouseX]));
+    color pix;
+    for (int x = 0; x < 11; x++) {
+      for (int y = 0; y < 11; y ++) {
+        pix = pixels[(mouseY - 5 + y)*width + mouseX - 5 + x];
+        if (red(pix) > 150 && red(pix) < 230 && blue(pix) < 230 && blue(pix) > 150) {
+          pts.add(new Node (mouseX - 5 + x, mouseY - 5 + y));
+          pts.get(pts.size() - 1).cons += 2;
+          needsNew = false;
+          return;
+        }
+      }
+    }
+ 
+   
     // breadth first search 10 pixel radius
     //red and blue values must be under 230, over 150 
     //take the lowest value and place node at that pixel
@@ -72,7 +84,7 @@ void startLine(int x, int y) {
 void contLine(int x, int y) {
   boolean h = false;
   for (Node p : pts) {
-    if (dist(x, y, p.x, p.y) <= 10 && p.cons < 4) {
+    if (dist(x, y, p.x, p.y) <= 10 && p.cons < 3) {
       p.cons++;
       current.points.add(p);
       h = true;
