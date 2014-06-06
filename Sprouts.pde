@@ -1,17 +1,21 @@
+import java.awt.event.*;
 ArrayList<Node> pts = new ArrayList<Node>();
 ArrayList<Line> lines = new ArrayList<Line>();
 Line current = null;
+int start = 0;
 boolean needsNew = false;
 int turn = 0;
-/*void start() {
+void start() {
  new NewGameFrame();
- }
- */
+}
 void setup() {
   size(400, 400);
   background(255);
-  pts.add(new Node(100, 100));
-  pts.add(new Node(200, 100));
+  for (int x = 0; x < start; x++) {
+    pts.add(new Node(100* (x / 3) + 100, (x % 3) * 100 + 100));
+  }
+ // pts.add(new Node(100, 100));
+  //pts.add(new Node(200, 100));
   boolean isDrawing= false;
   boolean playTurn = false;
 }
@@ -107,6 +111,7 @@ void mousePressed() {
   }
 }
 */
+void setStartNumber(int x) { start = x; }
 boolean findIntersections(Line a) {
 
   int x1 = a.points.get(0).x;
