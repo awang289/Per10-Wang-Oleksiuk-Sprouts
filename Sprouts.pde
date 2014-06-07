@@ -39,6 +39,15 @@ void draw() {
 }
 
 
+boolean areNodes(int x, int y){
+  for (Node p : pts) {
+    if (dist(x, y, p.x, p.y) <= 20) {
+      return false;
+    }
+  }
+  return true;
+}
+
 
 void mousePressed() {
  if (needsNew) {
@@ -47,7 +56,7 @@ void mousePressed() {
     for (int x = 0; x < 11; x++) {
       for (int y = 0; y < 11; y ++) {
         pix = pixels[(mouseY - 5 + y)*width + mouseX - 5 + x];
-        if (red(pix) > 150 && red(pix) < 230 && blue(pix) < 230 && blue(pix) > 150) {
+        if (blue(pix)-green(pix)> 25 && areNodes(mouseX - 5 + x,mouseY - 5 + y)) {
           pts.add(new Node (mouseX - 5 + x, mouseY - 5 + y));
           pts.get(pts.size() - 1).cons += 2;
           needsNew = false;
