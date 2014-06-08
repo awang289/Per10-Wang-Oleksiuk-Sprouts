@@ -5,11 +5,17 @@ class Node extends Point{
     int y = 0;
     int cons = 0;
   }
+ 
   Node(int x, int y) {
     this();
     this.x = x;
     this.y = y;
     this.cons = 0;
+  }
+  
+  void set(int x1, int y1){
+    x = x1;
+    y = y1;
   }
   void display() {
     stroke(0);
