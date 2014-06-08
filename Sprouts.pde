@@ -5,6 +5,7 @@ Line current = null;
 int start = 0;
 boolean needsNew = false;
 boolean searching = false;
+boolean playing = true;
 int turn = 0;
 void start() {
   new NewGameFrame();
@@ -24,17 +25,18 @@ void setup() {
 void keyPressed() {
   if (key == 'b') {
     if (needsNew == false && current != null) {
-       for (Node d : pts){
-          if (current.points.size() == 1 && 
+      for (Node d : pts) {
+        if (current.points.size() == 1 && 
           d.x== current.points.get(current.points.size()-1).x && 
-          d.y == current.points.get(current.points.size()-1).y){
-            d.cons--;
-          }
-       }
+          d.y == current.points.get(current.points.size()-1).y) {
+          d.cons--;
+        }
+      }
       current.removeify(current.points.get(current.points.size()-1));
       if (current.points.size()==0) {
         current = null;
         lines.remove(lines.size()-1);
+        turn--;
       }
     }
   }
@@ -54,6 +56,17 @@ void draw() {
     lines.get(lines.size() - 1).display( color (255, 0, 255));
   }
   //if universal boolean val is true, generate a single curve from the working spline to the point the mouse is at, regenerated each frame
+  if (!playing) {
+    if (turn % 2 == 1) {
+      background(255);
+      text("Player 1 wins!", 350, 300);
+      // Player 1 wins!
+    } else {
+      background(255);
+      text("Player 2 wins!", 350, 300);
+      //Player 2 wins!
+    }
+  }
 }
 
 
@@ -78,6 +91,9 @@ void mousePressed() {
           pts.add(new Node (mouseX - 5 + x, mouseY - 5 + y));
           pts.get(pts.size() - 1).cons += 2;
           needsNew = false;
+          if (possibleMoves().size() < 1) {
+            playing = false;
+          }
           return;
         }
       }
@@ -112,7 +128,7 @@ void contLine(int x, int y) {
   boolean h = false;
   boolean b = false;
   for (Node p : pts) {
-    if (dist(x, y, p.x, p.y) <= 10 && p.cons < 3){
+    if (dist(x, y, p.x, p.y) <= 10 && p.cons < 3) {
       if (p != current.points.get(current.points.size()-1)) {
         p.cons++;
         current.points.add(p);
@@ -124,8 +140,7 @@ void contLine(int x, int y) {
           current = null;
           needsNew = true;
         }
-      }
-      else {
+      } else {
         b = true;
       }
     }
@@ -234,7 +249,7 @@ ArrayList possibleMoves() {
     }
   }
   for (int a = 0; a < n.size (); a++) {
-    for (int b = a + 1; b < n.size (); b++) {
+    for (int b = a; b < n.size (); b++) {
       if (searchMove(n.get(a), n.get(b)) != null)
         moves.add(searchMove(n.get(a), n.get(b)));
       if (moves.size() > 4)
@@ -249,11 +264,14 @@ int slope (Point a, Point b) {
     return 100;
   } else {
     cd = (b.y - a.y) / (b.x - a.x);
-      return cd;
+    return cd;
   }
 }
 
 Line searchMove(Point start, Point end) {
+  if (start == end && ((Node) start).cons > 1) {
+    return null;
+  }
   Line a = new Line(start);
   float s = slope(start, end);
   s = atan(s);
@@ -300,3 +318,4 @@ void searchMove(Line a, Point end, float angle) {
     }
   }
 }
+
