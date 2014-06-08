@@ -185,7 +185,6 @@ boolean anyIntersections(Line a) {
       ) {
       return true;
     }
-    println(startNode.x+0.0);
   }
   if (a.points.size()>2) {
     background(255);
