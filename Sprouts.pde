@@ -4,6 +4,7 @@ ArrayList<Line> lines = new ArrayList<Line>();
 Line current = null;
 int start = 0;
 boolean needsNew = false;
+boolean searching = false;
 int turn = 0;
 void start() {
   new NewGameFrame();
@@ -225,4 +226,79 @@ boolean anyIntersections() {
   }
 
   return false;
+}
+ArrayList possibleMoves() {
+  ArrayList<Node> n = new ArrayList<Node>();
+  ArrayList moves = new ArrayList();
+  for (Node g : pts) {
+    if (g.cons < 3) {
+      n.add(g);
+    }
+  }
+  for (int a = 0; a < n.size (); a++) {
+    for (int b = a + 1; b < n.size (); b++) {
+      if (searchMove(n.get(a), n.get(b)) != null)
+        moves.add(searchMove(n.get(a), n.get(b)));
+      if (moves.size() > 4)
+        return moves;
+    }
+  }
+  return moves;
+}
+int slope (Point a, Point b) {
+  int cd;
+  if (b.x - a.x == 0) {
+    return 100;
+  } else {
+    cd = (b.y - a.y) / (b.x - a.x);
+      return cd;
+  }
+}
+
+Line searchMove(Point start, Point end) {
+  Line a = new Line(start);
+  float s = slope(start, end);
+  s = atan(s);
+  searching = true;
+  searchMove(a, end, s);
+  if (a.points.size() > 1) {
+    return a;
+  } else {
+    return null;
+  }
+}
+void searchMove(Line a, Point end, float angle) {
+  if (searching) {
+    boolean added = false;
+    a.points.add(end);
+    if (! anyIntersections(a)) {
+      searching = false;
+    } else {
+      a.points.remove(end);
+      Point last = a.points.get(a.points.size() - 1);
+      for (int x = 100; x > 0; x-= 20) {
+        a.points.add(new Point((int) (x * cos(angle)), (int) (x * sin(angle))));
+        if (! anyIntersections(a)) {
+          added = true;
+          break;
+        } else {
+          a.points.remove(a.points.size() - 1);
+        }
+      }
+      if (added) {
+        float a2 = atan( slope( a.points.get(a.points.size() - 1), end));
+        searchMove(a, end, a2);
+        searchMove(a, end, a2 + PI/4);
+        searchMove(a, end, a2 - PI / 4);        
+        searchMove(a, end, a2 + PI/2);
+        searchMove(a, end, a2 - PI / 2);
+        searchMove(a, end, a2 + 3 * PI/4);
+        searchMove(a, end, a2 - 3 * PI / 4);
+        searchMove(a, end, a2 + PI);
+        if (searching) {
+          a.points.remove(a.points.size() - 1);
+        }
+      }
+    }
+  }
 }
