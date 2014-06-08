@@ -116,7 +116,7 @@ void contLine(int x, int y) {
       if (p != current.points.get(current.points.size()-1)) {
         p.cons++;
         current.points.add(p);
-        if (anyIntersections()) {
+        if (anyIntersections(current)) {
           current.points.remove(current.points.size()-1);
           p.cons--;
         } else {
@@ -132,7 +132,7 @@ void contLine(int x, int y) {
   }
   if (!h && !b) {
     current.points.add(new Point(x, y));
-    if (anyIntersections()) {
+    if (anyIntersections(current)) {
       current.points.remove(current.points.size()-1);
     }
   }
@@ -142,8 +142,7 @@ void setStartNumber(int x) {
   start = x;
 }
 
-boolean anyIntersections() {
-  Line a = lines.get(lines.size()-1);
+boolean anyIntersections(Line a) {
   Point p = a.points.get(a.points.size()-1);
   Node startNode = new Node(a.points.get(0).x, a.points.get(0).y);
   Node endNode = new Node(width + 50, height+50);
