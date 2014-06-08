@@ -6,7 +6,7 @@ int start = 0;
 boolean needsNew = false;
 int turn = 0;
 void start() {
- new NewGameFrame();
+  new NewGameFrame();
 }
 void setup() {
   size(800, 600);
@@ -14,7 +14,7 @@ void setup() {
   for (int x = 0; x < start; x++) {
     pts.add(new Node(100* (x / 3) + 200, (x % 3) * 100 + 200));
   }
- // pts.add(new Node(100, 100));
+  // pts.add(new Node(100, 100));
   //pts.add(new Node(200, 100));
   boolean isDrawing= false;
   boolean playTurn = false;
@@ -27,21 +27,19 @@ void draw() {
   }
   for (Line l : lines) {
     l.display();
-
   }
   if (current != null) {
-      current.display( color(0,0,255));
-  }
-  else if (needsNew) {
-    lines.get(lines.size() - 1).display( color (255,0,255));
+    current.display( color(0, 0, 255));
+  } else if (needsNew) {
+    lines.get(lines.size() - 1).display( color (255, 0, 255));
   }
   //if universal boolean val is true, generate a single curve from the working spline to the point the mouse is at, regenerated each frame
 }
 
 
-boolean areNodes(int x, int y){
+boolean areNodes(int x, int y) {
   for (Node p : pts) {
-    if (dist(x, y, p.x, p.y) <= 20) {
+    if (dist(x, y, p.x, p.y) <= 10) {
       return false;
     }
   }
@@ -50,13 +48,13 @@ boolean areNodes(int x, int y){
 
 
 void mousePressed() {
- if (needsNew) {
+  if (needsNew) {
     loadPixels();
     color pix;
     for (int x = 0; x < 11; x++) {
       for (int y = 0; y < 11; y ++) {
         pix = pixels[(mouseY - 5 + y)*width + mouseX - 5 + x];
-        if (blue(pix)-green(pix)> 25 && areNodes(mouseX - 5 + x,mouseY - 5 + y)) {
+        if (blue(pix)-green(pix)> 25 && areNodes(mouseX - 5 + x, mouseY - 5 + y)) {
           pts.add(new Node (mouseX - 5 + x, mouseY - 5 + y));
           pts.get(pts.size() - 1).cons += 2;
           needsNew = false;
@@ -64,136 +62,148 @@ void mousePressed() {
         }
       }
     }
- 
-   
+
+
     // breadth first search 10 pixel radius
     //red and blue values must be under 230, over 150 
     //take the lowest value and place node at that pixel
     // if pixel found, put node at closest purple pixel
     //needsNew = false;
-  }
-  else if (current == null) {
+  } else if (current == null) {
     turn++;
     startLine(mouseX, mouseY);
   } else {
     contLine(mouseX, mouseY);
   }
 }
+
 void startLine(int x, int y) {
   for (Node p : pts) {
     if (dist(x, y, p.x, p.y) <= 10 && p.cons < 3) {
-      p.cons ++;
-      
+      p.cons++;
       Line g = new Line(p);
       lines.add(g);
       current = g;
     }
   }
 }
+//p != current.points.get(current.points.size()-1)
 void contLine(int x, int y) {
   boolean h = false;
+  boolean b = false;
   for (Node p : pts) {
-    if (dist(x, y, p.x, p.y) <= 10 && p.cons < 3) {
-      p.cons++;
-      current.points.add(p);
-      h = true;
-      current = null;
-      needsNew = true;
+    if (dist(x, y, p.x, p.y) <= 10 && p.cons < 3){
+      if (p != current.points.get(current.points.size()-1)) {
+        p.cons++;
+        current.points.add(p);
+        if (anyIntersections()) {
+          current.points.remove(current.points.size()-1);
+          p.cons--;
+        } else {
+          h = true;
+          current = null;
+          needsNew = true;
+        }
+      }
+      else {
+        b = true;
+      }
     }
   }
-  if (!h) {
+  if (!h && !b) {
     current.points.add(new Point(x, y));
-  }
-  //The check for intersections would go here
-}
-void endLine(int x, int y) {
-} // This is eventually supposed to make the new Node but I can't figure that out at the moment 
-/*
-void mousePressed() {
-  color c = get(mouseX, mouseY);
-  //add check to determine turns && intersections
-  if (isDrawing == false && c == #83F52C) {
-    isDrawing = true;
-    int u = whichNode();
-    Line l = new Line(new Point(pts.get(u).x, pts.get(u).y));
-    lines.add(l);
-    pts.get(whichNode()).cons++;
-  } else if (isDrawing == true) {
-    if (c == #83F52C) {
-      pts.get(whichNode()).cons++;
-      int o = whichNode();
-      lines.get(lines.size()-1).addify(new Point(pts.get(o).x, pts.get(o).y));
-      //right now this turns off line drawing if the color of the pixel you've clicked is black, but
-      //later on we should make this green, I.E. the color of all valid nodes
-      isDrawing = false;
-    } else {
-      lines.get(lines.size()-1).addify(new Point(mouseX, mouseY));
+    if (anyIntersections()) {
+      current.points.remove(current.points.size()-1);
     }
   }
 }
-*/
-void setStartNumber(int x) { start = x; }
-boolean findIntersections(Line a) {
 
-  int x1 = a.points.get(0).x;
-  int y1 = a.points.get(0).y;
-
-  return findIntersections2(x1, y1, x1, y1);
-  //just makes a call to the next function with the starting and previous points as the coordinates for the start of the Line
+void setStartNumber(int x) { 
+  start = x;
 }
 
-boolean findIntersections2(int x1, int y1, int prevX, int prevY) {
-  //y is the counter for number of surrounding pixels
-  int y = 0;
-  int nextX = 0;
-  int nextY = 0;
-  int tempX = 0;
-  int tempY = 0;
-  //tempX and tempY are the coordinates for the next point examined/moved to
-  for (int i = 0; i < 8; i++ ) {
-    if (i == 0) {
-      tempX = x1+1; 
-      tempY = y1+1;
-    } else if (i == 1) {
-      tempX = x1; 
-      tempY = y1+1;
-    } else if (i == 2) {
-      tempX = x1; 
-      tempY = y1-1;
-    } else if (i == 3) {
-      tempX = x1+1; 
-      tempY = y1;
-    } else if (i == 4) {
-      tempX = x1-1; 
-      tempY = y1;
-    } else if (i == 5) {
-      tempX = x1+1; 
-      tempY = y1-1;
-    } else if (i == 6) {
-      tempX = x1-1; 
-      tempY = y1-1;
-    } else {
-      tempX = x1-1; 
-      tempY = y1+1;
+boolean anyIntersections() {
+  Line a = lines.get(lines.size()-1);
+  Point p = a.points.get(a.points.size()-1);
+  Node startNode = new Node(a.points.get(0).x, a.points.get(0).y);
+  Node endNode = new Node(width + 50, height+50);
+  for (Node h : pts) {
+    if (h.x == p.x && h.y == p.y) {
+      endNode.set(h.x, h.y);
     }
-    //checks each pixel around the starting point
-    color c = get(tempX, tempY);
-    if (c == #000000 && !(tempX == prevX && tempY == prevY)) {
-      y++;
-      nextX = tempX;
-      nextY = tempY;
-      //if the checked pixel is black and not the previous point, add to y
-    }
-  } 
-  pts.add(new Node(x1, y1));// displays the x1,y1 locations every time, good for checking results
-  if (y == 0 && !(x1 == prevX && y1 == prevY)) {
-    return false;
-    //if no pixels around starting point, and starting point isn't the origin of the line, return false to indicate no intersections
-  } else if (y > 1) {
-    //if there are more than 1 pixels around the starting point, return false to indicate there is an intersection
-    return true;
-  } else {
-    //run function again, moving the starting point to the tempX and tempY values, and the previous point to the current starting point values
-    return findIntersections2(tempX, tempY, x1, y1);
   }
+  ArrayList<Integer> x = new ArrayList<Integer>();
+  ArrayList<Integer> y = new ArrayList<Integer>();
+
+  background(255);
+  a.display();
+  loadPixels();
+  for (int i = 0; i < height; i++) {
+    for (int j = 0; j<width; j++) {
+      color c = pixels[(i*width)+j];
+      if (c!=-1) {
+        x.add(j);
+        y.add(i);
+      }
+    }
+  }
+  background(255);
+  for (int v = 0; v < lines.size ()-1; v++) {
+    lines.get(v).display();
+  }
+  for (Node d : pts) {
+    d.display();
+  }
+  loadPixels();
+  color q;
+  for ( int e = 0; e < x.size ()-1; e++) {
+    int x1 = x.get(e);
+    int y1 = y.get(e);
+    q = pixels[(y1*width)+x1];
+    if ((q!=-1) && 
+      !((dist(x1, y1, startNode.x+0.0, startNode.y+0.0) <= 10) || startNode == endNode) &&
+      !(dist(x1, y1, endNode.x+0.0, endNode.y+0.0) <= 10)
+      ) {
+      return true;
+    }
+    println(startNode.x+0.0);
+  }
+  if (a.points.size()>2) {
+    background(255);
+    curve(a.points.get(a.points.size()-3).x, 
+    a.points.get(a.points.size()-3).y, 
+    a.points.get(a.points.size()-2).x, 
+    a.points.get(a.points.size()-2).y, 
+    a.points.get(a.points.size()-1).x, 
+    a.points.get(a.points.size()-1).y, 
+    a.points.get(a.points.size()-1).x, 
+    a.points.get(a.points.size()-1).y);
+    loadPixels();
+    ArrayList<Integer> x2= new ArrayList<Integer>();
+    ArrayList<Integer> y2= new ArrayList<Integer>();
+    for (int i = 0; i < height; i++) {
+      for (int j = 0; j<width; j++) {
+        color c = pixels[(i*width)+j];
+        if (c!=-1) {
+          x2.add(j);
+          y2.add(i);
+        }
+      }
+    }
+    background(255);
+    a.displayIntersection();
+    loadPixels();
+    for (int u = 0; u<x2.size ()-1; u++) {
+      int x3 = x2.get(u);
+      int y3 = y2.get(u);
+      color w = pixels[(y3*width)+x3];
+      if ((w!=-1) && 
+        !(dist(x3, y3, startNode.x+0.0, startNode.y+0.0) <= 10) &&
+        !(dist(x3, y3, endNode.x+0.0, endNode.y+0.0) <= 10)) {
+        return true;
+      }
+    }
+  }
+
+  return false;
 }
