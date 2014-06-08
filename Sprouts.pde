@@ -23,6 +23,13 @@ void setup() {
 void keyPressed() {
   if (key == 'b') {
     if (needsNew == false && current != null) {
+       for (Node d : pts){
+          if (current.points.size() == 1 && 
+          d.x== current.points.get(current.points.size()-1).x && 
+          d.y == current.points.get(current.points.size()-1).y){
+            d.cons--;
+          }
+       }
       current.removeify(current.points.get(current.points.size()-1));
       if (current.points.size()==0) {
         current = null;
