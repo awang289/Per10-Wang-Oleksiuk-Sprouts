@@ -20,6 +20,18 @@ void setup() {
   boolean playTurn = false;
 }
 
+void keyPressed() {
+  if (key == 'b') {
+    if (needsNew == false && current != null) {
+      current.removeify(current.points.get(current.points.size()-1));
+      if (current.points.size()==0) {
+        current = null;
+        lines.remove(lines.size()-1);
+      }
+    }
+  }
+}
+
 void draw() {
   background(255);
   for (Node h : pts) {
