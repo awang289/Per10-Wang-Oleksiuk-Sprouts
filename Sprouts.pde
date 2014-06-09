@@ -40,6 +40,9 @@ void keyPressed() {
       }
     }
   }
+  else if (key == 'n' && !playing) {
+    reset();
+  }
 }
 
 void draw() {
@@ -69,7 +72,14 @@ void draw() {
   }
 }
 
-
+void reset() {
+  pts = new ArrayList<Node>();
+  lines = new ArrayList<Line>();
+  start = 0;
+  playing = true;
+  turn = 0;
+  start();
+}
 boolean areNodes(int x, int y) {
   for (Node p : pts) {
     if (dist(x, y, p.x, p.y) <= 10) {
