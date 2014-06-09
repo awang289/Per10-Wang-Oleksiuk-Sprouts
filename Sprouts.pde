@@ -60,6 +60,8 @@ void draw() {
   }
   //if universal boolean val is true, generate a single curve from the working spline to the point the mouse is at, regenerated each frame
   if (!playing) {
+    stroke(0);
+    fill(0);
     if (turn % 2 == 1) {
       background(255);
       text("Player 1 wins!", 350, 300);
