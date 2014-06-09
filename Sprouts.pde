@@ -310,7 +310,7 @@ void searchMove(Line a, Point end, float angle) {
     } else {
       a.points.remove(end);
       Point last = a.points.get(a.points.size() - 1);
-      for (int x = 101; x > 0; x-= 20) {
+      for (int x = 102; x > 0; x-= 20) {
         if ( (x * cos(angle)) < 0 || (x * cos(angle)) > 800 || (x * sin(angle)) < 0 || (x * sin(angle)) > 600) {
           continue;
         }
