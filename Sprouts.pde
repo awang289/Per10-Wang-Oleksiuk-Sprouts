@@ -309,6 +309,9 @@ void searchMove(Line a, Point end, float angle) {
       a.points.remove(end);
       Point last = a.points.get(a.points.size() - 1);
       for (int x = 110; x > 0; x-= 20) {
+        if ( (x * cos(angle)) < 0 || (x * cos(angle)) > 800 || (x * sin(angle)) < 0 || (x * sin(angle)) > 600) {
+          continue;
+        }
         a.points.add(new Point((int) (x * cos(angle)), (int) (x * sin(angle))));
         if (! anyIntersections(a)) {
           added = true;
