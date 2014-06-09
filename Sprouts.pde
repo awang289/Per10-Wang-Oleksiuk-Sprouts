@@ -257,6 +257,12 @@ ArrayList possibleMoves() {
     if (g.cons < 3) {
       n.add(g);
     }
+    if (g.cons < 2) {
+      Line gg = new Line(g);
+      gg.points.add(g);
+      moves.add(gg);
+      return moves;
+    }
   }
   for (int a = 0; a < n.size (); a++) {
     for (int b = a; b < n.size (); b++) {
