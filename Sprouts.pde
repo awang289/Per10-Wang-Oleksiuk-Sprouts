@@ -262,7 +262,7 @@ ArrayList possibleMoves() {
     for (int b = a; b < n.size (); b++) {
       if (searchMove(n.get(a), n.get(b)) != null)
         moves.add(searchMove(n.get(a), n.get(b)));
-      if (moves.size() > 4)
+      if (moves.size() > 0)
         return moves;
     }
   }
@@ -302,7 +302,7 @@ void searchMove(Line a, Point end, float angle) {
     } else {
       a.points.remove(end);
       Point last = a.points.get(a.points.size() - 1);
-      for (int x = 100; x > 0; x-= 20) {
+      for (int x = 110; x > 0; x-= 20) {
         a.points.add(new Point((int) (x * cos(angle)), (int) (x * sin(angle))));
         if (! anyIntersections(a)) {
           added = true;
